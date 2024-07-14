@@ -83,4 +83,6 @@ Vagrant.configure("2") do |config|
   # Run the provision script
   config.vm.provision "shell", path: "scripts/setup.sh"
   config.vm.provision "shell", path: "scripts/project_setup.sh"
+  config.vm.provision "shell", path: "scripts/gunicorn_service_setup.sh"
+
 end
