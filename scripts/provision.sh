@@ -9,3 +9,4 @@ chmod +x /vagrant/scripts/*.sh
 /vagrant/scripts/project_setup.sh
 /vagrant/scripts/gunicorn_service_setup.sh
 /vagrant/scripts/nginx_setup.sh
+/vagrant/scripts/health_check.sh
