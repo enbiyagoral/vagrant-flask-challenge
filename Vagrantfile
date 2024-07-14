@@ -82,9 +82,6 @@ Vagrant.configure("2") do |config|
   #   apt-get install -y apache2
   # SHELL
   # Run the provision script
-  config.vm.provision "shell", path: "scripts/setup.sh"
-  config.vm.provision "shell", path: "scripts/project_setup.sh"
-  config.vm.provision "shell", path: "scripts/gunicorn_service_setup.sh"
-  config.vm.provision "shell", path: "scripts/nginx_setup.sh"
+  config.vm.provision "shell", path: "scripts/provision.sh"
 
 end
