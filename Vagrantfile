@@ -53,6 +53,7 @@ Vagrant.configure("2") do |config|
   # If you use this you may want to enable additional shared subfolders as
   # shown above.
   # config.vm.synced_folder ".", "/vagrant", disabled: true
+  config.vm.synced_folder "./", "/vagrant"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -83,5 +84,4 @@ Vagrant.configure("2") do |config|
   # SHELL
   # Run the provision script
   config.vm.provision "shell", path: "scripts/provision.sh"
-
 end
