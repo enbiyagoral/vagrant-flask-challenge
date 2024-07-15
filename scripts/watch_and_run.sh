@@ -9,6 +9,11 @@ while true; do
 
     if [ "${new_hash}" != "${last_hash}" ]; then
         echo "Changes detected in ${DIR_TO_WATCH}, running command."
+        
+        sudo systemctl stop myproject
+        sudo systemctl daemon-reload
+        sudo systemctl start myproject
+        sudo systemctl enable myproject
 
         last_hash="${new_hash}"
     fi
