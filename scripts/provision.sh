@@ -10,4 +10,4 @@ chmod +x /vagrant/scripts/*.sh
 /vagrant/scripts/gunicorn_service_setup.sh
 /vagrant/scripts/nginx_setup.sh
 /vagrant/scripts/health_check.sh
-nohup /vagrant/scripts/watch_and_run.sh
+nohup /vagrant/scripts/watch.sh
