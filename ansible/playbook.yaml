@@ -76,3 +76,39 @@
         name: myproject
         state: started
         enabled: yes
+
+    - name: Remove default Nginx site
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+    
+    - name: Copy systemd file for Nginx
+      copy:
+        src: /vagrant/systemd/myproject
+        dest: /etc/nginx/sites-available/myproject
+        remote_src: true
+
+    - name: Enable the Nginx site configuration
+      file:
+        src: /etc/nginx/sites-available/myproject
+        dest: /etc/nginx/sites-enabled/myproject
+        state: link
+
+    - name: Test Nginx configuration
+      command: nginx -t
+
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted
+
+    - name: Remove UFW rule for port 5000
+      ufw:
+        rule: allow
+        port: 5000
+        proto: tcp
+
+    - name: Allow 'Nginx Full' through UFW
+      ufw:
+        rule: allow
+        name: 'Nginx Full'
