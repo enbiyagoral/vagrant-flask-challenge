@@ -9,7 +9,7 @@
         upgrade: dist
 
     - name: Install necessary packages
-      apt: 
+      apt:
         name:
           - python3
           - python3-pip
@@ -62,23 +62,16 @@
         port: 5000
         proto: tcp
 
-    - name: Create systemd service file for Flask
+    - name: Copy systemd service file for Gunicorn
       copy:
+        src: /vagrant/systemd/myproject.service
         dest: /etc/systemd/system/myproject.service
-        content: |
-          [Unit]
-          Description=Flask Application
+        remote_src: true
 
-          [Service]
-          User=vagrant
-          WorkingDirectory=/home/vagrant/myproject
-          Environment="PATH=/home/vagrant/myproject/myprojectenv/bin"
-          ExecStart=/home/vagrant/myproject/myprojectenv/bin/python /home/vagrant/myproject/myproject.py
+    - name: Reload systemd to pick up the new service file
+      command: sudo systemctl daemon-reload
 
-          [Install]
-          WantedBy=multi-user.target
-
-    - name: Start and enable Flask service
+    - name: Start and enable Gunicorn service
       systemd:
         name: myproject
         state: started
