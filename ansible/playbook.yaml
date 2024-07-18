@@ -1,0 +1,63 @@
+---
+- name: Setup Flask App
+  hosts: all
+  become: true
+  tasks:
+    - name: Update and upgrade apt packages
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Install necessary packages
+      apt: 
+        name:
+          - python3
+          - python3-pip
+          - python3-dev
+          - build-essential
+          - libssl-dev
+          - libffi-dev
+          - python3-setuptools
+          - python3-venv
+          - nginx
+        state: present
+
+    - name: Install Flask
+      pip:
+        name: flask
+
+    - name: Create application directory
+      file:
+        path: /home/vagrant/myproject
+        state: directory
+        owner: vagrant
+        group: vagrant
+
+    - name: Copy Flask application
+      copy:
+        src: /vagrant/myproject/myproject.py
+        dest: /home/vagrant/myproject/myproject.py
+        owner: vagrant
+        group: vagrant
+        remote_src: true
+
+    - name: Create systemd service file for Flask
+      copy:
+        dest: /etc/systemd/system/myproject.service
+        content: |
+          [Unit]
+          Description=Flask Application
+
+          [Service]
+          User=vagrant
+          WorkingDirectory=/home/vagrant/myproject
+          ExecStart=/usr/bin/python3 /home/vagrant/myproject/myproject.py
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Start and enable Flask service
+      systemd:
+        name: myproject
+        state: started
+        enabled: yes

@@ -25,7 +25,8 @@ Vagrant.configure("2") do |config|
   # NOTE: This will enable public access to the opened port
   # config.vm.network "forwarded_port", guest: 80, host: 8080
   # config.vm.network "forwarded_port", guest: 5000, host: 5000
-  config.vm.network "public_network", bridge: "wlo1"
+  # config.vm.network "public_network", bridge: "wlo1"
+  config.vm.network "private_network", ip: "192.168.56.10"
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine and only allow access
@@ -83,5 +84,10 @@ Vagrant.configure("2") do |config|
   #   apt-get install -y apache2
   # SHELL
   # Run the provision script
-  config.vm.provision "shell", path: "scripts/provision.sh"
+  # config.vm.provision "shell", path: "scripts/provision.sh"
+  config.vm.provision "ansible" do |ansible|
+    ansible.compatibility_mode = "2.0"
+    ansible.playbook = "ansible/playbook.yaml"
+    ansible.inventory_path = "ansible/inventory"
+  end
 end
