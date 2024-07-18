@@ -41,6 +41,27 @@
         group: vagrant
         remote_src: true
 
+    - name: Create virtual environment
+      command: python3 -m venv /home/vagrant/myproject/myprojectenv
+      args:
+        creates: /home/vagrant/myproject/myprojectenv/bin/activate
+
+    - name: Install wheel in virtual environment
+      pip:
+        name: wheel
+        virtualenv: /home/vagrant/myproject/myprojectenv
+
+    - name: Install packages from requirements.txt
+      pip:
+        requirements: /vagrant/requirements.txt
+        virtualenv: /home/vagrant/myproject/myprojectenv
+
+    - name: Allow port 5000 through UFW
+      ufw:
+        rule: allow
+        port: 5000
+        proto: tcp
+
     - name: Create systemd service file for Flask
       copy:
         dest: /etc/systemd/system/myproject.service
@@ -51,7 +72,8 @@
           [Service]
           User=vagrant
           WorkingDirectory=/home/vagrant/myproject
-          ExecStart=/usr/bin/python3 /home/vagrant/myproject/myproject.py
+          Environment="PATH=/home/vagrant/myproject/myprojectenv/bin"
+          ExecStart=/home/vagrant/myproject/myprojectenv/bin/python /home/vagrant/myproject/myproject.py
 
           [Install]
           WantedBy=multi-user.target
