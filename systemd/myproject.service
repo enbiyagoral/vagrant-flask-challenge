@@ -5,9 +5,9 @@ After=network.target
 [Service]
 User=vagrant
 Group=www-data
-WorkingDirectory=/home/vagrant/myproject
-Environment="PATH=/home/vagrant/myproject/myprojectenv/bin"
-ExecStart=/home/vagrant/myproject/myprojectenv/bin/gunicorn --workers 3 --bind 0.0.0.0:5000 myproject:app
+WorkingDirectory=/vagrant/myproject
+Environment="PATH=/vagrant/myproject/myprojectenv/bin"
+ExecStart=/vagrant/myproject/myprojectenv/bin/gunicorn --workers 3 --bind 0.0.0.0:5000 myproject:app
 
 [Install]
 WantedBy=multi-user.target

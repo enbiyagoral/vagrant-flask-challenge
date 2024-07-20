@@ -1,4 +1,3 @@
----
 - name: Setup Flask App
   hosts: all
   become: true
@@ -62,27 +61,18 @@
         port: 5000
         proto: tcp
 
+    - name: Remove default Nginx site
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+
     - name: Copy systemd service file for Gunicorn
       copy:
         src: /vagrant/systemd/myproject.service
         dest: /etc/systemd/system/myproject.service
         remote_src: true
 
-    - name: Reload systemd to pick up the new service file
-      command: sudo systemctl daemon-reload
-
-    - name: Start and enable Gunicorn service
-      systemd:
-        name: myproject
-        state: started
-        enabled: yes
-
-    - name: Remove default Nginx site
-      file:
-        path: /etc/nginx/sites-enabled/default
-        state: absent
-    
-    - name: Copy systemd file for Nginx
+    - name: Copy Nginx configuration
       copy:
         src: /vagrant/systemd/myproject
         dest: /etc/nginx/sites-available/myproject
@@ -94,6 +84,15 @@
         dest: /etc/nginx/sites-enabled/myproject
         state: link
 
+    - name: Reload systemd to pick up new service files
+      command: systemctl daemon-reload
+
+    - name: Start and enable Gunicorn service
+      systemd:
+        name: myproject
+        state: started
+        enabled: yes
+
     - name: Test Nginx configuration
       command: nginx -t
 
@@ -102,13 +101,10 @@
         name: nginx
         state: restarted
 
-    - name: Remove UFW rule for port 5000
-      ufw:
-        rule: allow
-        port: 5000
-        proto: tcp
+    - name: Run health_check.sh script
+      shell: |
+        chmod +x /vagrant/scripts/health_check.sh && /vagrant/scripts/health_check.sh
 
-    - name: Allow 'Nginx Full' through UFW
-      ufw:
-        rule: allow
-        name: 'Nginx Full'
+    - name: Run watch_and_run.sh script in the background
+      shell: |
+        chmod +x /vagrant/scripts/watch_and_run.sh && nohup /vagrant/scripts/watch_and_run.sh &
